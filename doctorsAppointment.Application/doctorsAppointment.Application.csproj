@@ -14,4 +14,12 @@
     <ProjectReference Include="..\doctorsAppointment.Domain\doctorsAppointment.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Appointments\ConfirmAppointment\" />
+    <Folder Include="Appointments\CancelAppointment\" />
+    <Folder Include="Errors\" />
+    <Folder Include="Patients\" />
+    <Folder Include="Users\" />
+  </ItemGroup>
+
 </Project>

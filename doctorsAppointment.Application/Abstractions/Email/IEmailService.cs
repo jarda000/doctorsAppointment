@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace doctorsAppointment.Application.Abstractions.Email;
+﻿namespace doctorsAppointment.Application.Abstractions.Email;
 
 public interface IEmailService
 {
