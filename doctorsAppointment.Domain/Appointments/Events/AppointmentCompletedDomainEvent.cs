@@ -2,4 +2,4 @@
 
 namespace doctorsAppointment.Domain.Appointments.Events;
 
-public sealed record AppointmentBookedDomainEvent(Guid AppointmentId) : IDomainEvent;
+public sealed record AppointmentCompletedDomainEvent(Guid AppointmentId) : IDomainEvent;

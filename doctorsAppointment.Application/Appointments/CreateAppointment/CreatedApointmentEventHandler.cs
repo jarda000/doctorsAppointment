@@ -6,7 +6,7 @@ using MediatR;
 
 namespace doctorsAppointment.Application.Appointments.CreateAppointment;
 
-public sealed class ApointmentCreatedEventHandler(IAppointmentRepository appointmentRepository, IEmailService emailService, IPatientRepository patientRepository) : INotificationHandler<AppointmentCreatedDomainEvent>
+public sealed class CreatedApointmentEventHandler(IAppointmentRepository appointmentRepository, IEmailService emailService, IPatientRepository patientRepository) : INotificationHandler<AppointmentCreatedDomainEvent>
 {
     private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
     private readonly IEmailService _emailService = emailService;

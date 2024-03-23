@@ -1,0 +1,19 @@
+﻿using doctorsAppointment.Domain.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace doctorsAppointment.Domain.Appointments;
+
+public static class AppointmentErrors
+{
+    public static Error NotFound = new("Appointment.NotFound", "Appointment with the specified identifier was not found");
+    public static Error Overlap = new("Appointment.Overlap", "The appointment overlaps with another appointment");
+    public static Error NotConfirmed = new("Appointment.NotConfirmed", "The appointment is not confirmed");
+    public static Error NotScheduled = new("Appointment.NotScheduled", "The appointment is not scheduled");
+    public static Error NotPending = new("Appointment.NotPending", "The appointment is not pending");
+    public static Error NotFinished = new("Appointment.NotFinished", "The appointment is not finished");
+    public static Error AlreadyInProgress = new("Appointment.AlreadyInProgress", "The appointment is already in progress");
+}

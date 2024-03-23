@@ -2,6 +2,4 @@
 
 namespace doctorsAppointment.Domain.Abstractions;
 
-internal interface IDomainEvent : INotification
-{
-}
+public interface IDomainEvent : INotification;
