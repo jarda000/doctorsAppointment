@@ -4,9 +4,7 @@ using doctorsAppointment.Application.Abstractions.Messaging;
 using doctorsAppointment.Application.Appointments.GetAppointment;
 using doctorsAppointment.Domain.Abstractions;
 using doctorsAppointment.Domain.Appointments;
-using MediatR;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,17 +12,16 @@ using System.Threading.Tasks;
 
 namespace doctorsAppointment.Application.Appointments.ListAppointments;
 
-internal sealed class ListAppointmentByDateQueryHandler(ISqlConnectionFactory sqlConnectionFactory) : IQueryHandler<ListAppointmentByDateQuery, IReadOnlyList<AppointmentResponse>>
+internal sealed class ListAppointmentByPatientQueryHandler(ISqlConnectionFactory sqlConnectionFactory) : IQueryHandler<ListAppointmentsByPatientQuery, IReadOnlyList<AppointmentResponse>>
 {
     private readonly ISqlConnectionFactory sqlConnectionFactory = sqlConnectionFactory;
 
-    public async Task<Result<IReadOnlyList<AppointmentResponse>>> Handle(ListAppointmentByDateQuery request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyList<AppointmentResponse>>> Handle(ListAppointmentsByPatientQuery request, CancellationToken cancellationToken)
     {
-        if(request.StartDate > request.EndDate)
+        if(request.PatientId == Guid.Empty)
         {
             return new List<AppointmentResponse>();
         }
-
         using var connection = sqlConnectionFactory.CreateConnection();
 
         const string sql = """
@@ -37,13 +34,11 @@ internal sealed class ListAppointmentByDateQueryHandler(ISqlConnectionFactory sq
                 appointment_end AS AppointmentEnd,
                 description AS Description
             FROM appointments
-            WHERE appointment_start >= @StartDate AND appointment_end <= @EndDate
+            WHERE patient_id = @PatientId
             """;
-
         var appointments = await connection.QueryAsync<AppointmentResponse>(sql, new
         {
-            request.StartDate,
-            request.EndDate
+            request.PatientId
         });
         if (appointments is null)
         {
