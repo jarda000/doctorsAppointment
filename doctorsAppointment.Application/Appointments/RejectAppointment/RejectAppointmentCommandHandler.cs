@@ -3,22 +3,22 @@ using doctorsAppointment.Application.Abstractions.Messaging;
 using doctorsAppointment.Domain.Abstractions;
 using doctorsAppointment.Domain.Appointments;
 
-namespace doctorsAppointment.Application.Appointments.ConfirmAppointment;
+namespace doctorsAppointment.Application.Appointments.RejectAppointment;
 
-internal sealed class ConfirmAppointmentCommandHandler(IDateTimeProvider dateTimeProvider, IAppointmentRepository appointmentRepository, IUnitOfWork unitOfWork) : ICommandHandler<ConfirmAppointmentCommand>
+internal sealed class RejectAppointmentCommandHandler(IAppointmentRepository appointmentRepository, IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider) : ICommandHandler<RejectAppointmentCommand>
 {
-    private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
     private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
 
-    public async Task<Result> Handle(ConfirmAppointmentCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RejectAppointmentCommand request, CancellationToken cancellationToken)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(request.AppointmentId, cancellationToken);
         if (appointment is null)
         {
             return Result.Failure(AppointmentErrors.NotFound);
         }
-        var result = appointment.Confirm(_dateTimeProvider.UtcNow);
+        var result = appointment.Reject(_dateTimeProvider.UtcNow);
         if (result.IsFailure)
         {
             return Result.Failure(result.Error);

@@ -2,19 +2,15 @@
 using doctorsAppointment.Application.Abstractions.Messaging;
 using doctorsAppointment.Domain.Abstractions;
 using doctorsAppointment.Domain.Appointments;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace doctorsAppointment.Application.Appointments.CancelAppointment;
 
-internal sealed class CancelAppointmentCommandHandler : ICommandHandler<CancelAppointmentCommand>
+internal sealed class CancelAppointmentCommandHandler(IUnitOfWork unitOfWork, IAppointmentRepository appointmentRepository, IDateTimeProvider dateTimeProvider) : ICommandHandler<CancelAppointmentCommand>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IAppointmentRepository _appointmentRepository;
-    private readonly IDateTimeProvider _dateTimeProvider;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
+    private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
+
     public async Task<Result> Handle(CancelAppointmentCommand request, CancellationToken cancellationToken)
     {
         var appointment = await _appointmentRepository.GetByIdAsync(request.AppointmentId, cancellationToken);

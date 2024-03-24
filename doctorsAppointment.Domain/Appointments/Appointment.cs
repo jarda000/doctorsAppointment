@@ -9,26 +9,29 @@ public sealed class Appointment : Entity
     public DateTime CreatedOnUtc { get; private set; }
     public DateTime? CanceledOnUtc { get; private set; }
     public DateTime? ConfirmedOnUtc { get; private set; }
+    public DateTime? RejectedOnUtc { get; private set; }
     public DateRange ScheduledFor { get; private set; }
     public Patient Patient { get; private set; }
     public AppointmentStatus Status { get; private set; }
-    public Guid CreatorId { get; private set; }
+    public Guid UserId { get; private set; }
+    public Description? Description { get; private set; }
 
-    private Appointment(Guid Id, DateTime createdOnUtc, DateRange scheduledFor, Patient patient, AppointmentStatus status, Guid creatorId) : base(Id)
+    private Appointment(Guid Id, DateTime createdOnUtc, DateRange scheduledFor, Patient patient, AppointmentStatus status, Guid userId, Description description) : base(Id)
     {
         CreatedOnUtc = createdOnUtc;
         ScheduledFor = scheduledFor;
         Patient = patient;
         Status = status;
-        CreatorId = creatorId;
+        UserId = userId;
+        Description = description;
     }
     private Appointment()
     {
 
     }
-    public static Appointment Create(DateTime createdOnUtc, DateRange scheduledFor, Patient patient, Guid creatorId)
+    public static Appointment Create(DateTime createdOnUtc, DateRange scheduledFor, Patient patient, Guid userId, Description? description)
     {
-        Appointment appointment = new(Guid.NewGuid(), createdOnUtc, scheduledFor, patient, AppointmentStatus.Pending, creatorId);
+        Appointment appointment = new(Guid.NewGuid(), createdOnUtc, scheduledFor, patient, AppointmentStatus.Pending, userId, description);
 
         appointment.RaiseDomainEvent(new AppointmentCreatedDomainEvent(appointment.Id));
 
@@ -46,13 +49,14 @@ public sealed class Appointment : Entity
         RaiseDomainEvent(new AppointmentConfirmedDomainEvent(Id));
         return Result.Success();
     }
-    public Result Reject()
+    public Result Reject(DateTime utcNow)
     {
         if (Status is not AppointmentStatus.Pending)
         {
             return Result.Failure(AppointmentErrors.NotPending);
         }
         Status = AppointmentStatus.Rejected;
+        RejectedOnUtc = utcNow;
         RaiseDomainEvent(new AppointmentRejectedDomainEvent(Id));
         return Result.Success();
     }
